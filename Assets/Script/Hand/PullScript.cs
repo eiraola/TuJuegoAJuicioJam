@@ -2,14 +2,15 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PunchScript : MonoBehaviour
+public class PullScript : MonoBehaviour, IHandInterface
 {
     PlayerController player;
     GameObject marker;
+    bool bReady = false;
     // Start is called before the first frame update
     void Start()
     {
-        //Destroy(gameObject, 0.7f);
+        
     }
 
     // Update is called once per frame
@@ -17,8 +18,7 @@ public class PunchScript : MonoBehaviour
     {
         if (marker)
         {
-           
-            transform.position = marker.transform.position + new Vector3(0, 1, 0);
+           // transform.position = marker.transform.position + new Vector3(0, 1, 0);
         }
     }
     public void InitVariables(PlayerController controller, float destroyTime, GameObject mark)
@@ -31,28 +31,33 @@ public class PunchScript : MonoBehaviour
     {
         player.EndPunch();
     }
+    public void Pull()
+    {
+
+    }
     private void OnTriggerEnter(Collider other)
     {
         Debug.Log(other.tag);
         Debug.Log("Collides");
-        GameObject enemy = other.gameObject;
-        if (enemy){
-            if (enemy.CompareTag("Enemy"))
+        GameObject ladder = other.gameObject;
+        if (ladder)
+        {
+             if (ladder.CompareTag("Ladder"))
             {
                 Debug.Log("HasTag");
-                SkelletonScript Enemy = enemy.GetComponent<SkelletonScript>();
-                if (Enemy)
+                IActivable activable = ladder.GetComponent<IActivable>();
+                if (activable != null)
                 {
-                    Enemy.GetHit(2, this.transform.position);
-                }
-                FlyScript Enemy2 = enemy.GetComponent<FlyScript>();
-                if (Enemy2)
-                {
-                    Enemy2.GetHit(2, this.transform.position);
+                    Debug.Log("Casted");
+                    activable.Activate();
                 }
             }
-           
+
         }
-       
+
+    }
+    public void Ready()
+    {
+        bReady = true;
     }
 }

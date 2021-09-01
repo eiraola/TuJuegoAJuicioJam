@@ -25,4 +25,5 @@ public class Activable : MonoBehaviour, IActivable
     {
         
     }
+    public void Deactivate() { }
 }

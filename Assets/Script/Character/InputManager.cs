@@ -16,7 +16,7 @@ public class InputManager : MonoBehaviour
     {
         GetMovement();
         GetPunchAction();
-
+        GetDash();
     }
     void GetMovement()
     {
@@ -37,6 +37,13 @@ public class InputManager : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             player.UseHand();
+        }
+    }
+    void GetDash()
+    {
+        if (Input.GetButtonDown("Dash"))
+        {
+            Debug.Log("Dash");
         }
     }
 }

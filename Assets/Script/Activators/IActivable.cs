@@ -6,6 +6,7 @@ public interface IActivable
 {
     
     public void Activate();
+    public void Deactivate();
     public bool IsActivated();
 
 }

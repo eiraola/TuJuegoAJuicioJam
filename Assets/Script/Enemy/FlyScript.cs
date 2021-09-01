@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class SkelletonScript : MonoBehaviour
+public class FinalBossScript : MonoBehaviour
 {
     public int maxHP = 4;
     int hp = 4;
@@ -18,22 +18,22 @@ public class SkelletonScript : MonoBehaviour
     bool isActive = false;
     public GameObject ActivatorElement;
     IActivable activatorScript;
-    
+
 
 
 
     // Start is called before the first frame update
     void Start()
     {
-        body = GetComponent<Rigidbody>();
-        hp = maxHP;
-        agent = GetComponent<NavMeshAgent>();
-        PlayerOne = GameObject.FindGameObjectsWithTag("Player")[0];
-        animationController = EnemyModel.GetComponent<Animator>();
         if (ActivatorElement)
         {
             activatorScript = ActivatorElement.GetComponent<IActivable>();
         }
+        body = GetComponent<Rigidbody>();
+        hp = maxHP;
+      
+        PlayerOne = GameObject.FindGameObjectsWithTag("Player")[0];
+      
 
 
     }
@@ -41,11 +41,15 @@ public class SkelletonScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Vector3.Distance(transform.position, PlayerOne.transform.position) < 20.0f) { isActive = true; }
-        if(agent.enabled && isActive)
-            agent.destination = PlayerOne.transform.position;
+        if(Vector3.Distance(transform.position, PlayerOne.transform.position) < 20.0f) { isActive = true; } 
+        if(isActive)
+        {
+            body.velocity = transform.forward * 400 * Time.deltaTime;
+            Vector3 k = PlayerOne.transform.position - transform.position;
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(new Vector3(k.x, 0, k.z)), 80.0f*Time.deltaTime);
+        }
         
-        animationController.SetFloat("Velocity", agent.velocity.magnitude/3.5f);
+        
     }
     public void GetHit(int damage, Vector3 direction)
     {
@@ -74,13 +78,10 @@ public class SkelletonScript : MonoBehaviour
     }
     public void Die()
     {
-        agent.enabled = false;
-        Animator anim = enemyBody.GetComponent<Animator>();
-        anim.applyRootMotion=true;
-        anim.SetBool("Die", true);
-        if(activatorScript!= null)
+        if (activatorScript != null)
         {
             activatorScript.Activate();
         }
+        Destroy(gameObject) ;
     }
 }
